@@ -1,6 +1,8 @@
 def call(Map config = [:]) {
     pipeline {
-        agent any
+        kubernetes {
+          label 'k8s'
+        }
         stages {
             stage('Build') {
                 steps {
