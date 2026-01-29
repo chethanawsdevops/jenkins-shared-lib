@@ -1,26 +1,14 @@
 def call(Map config = [:]) {
-    pipeline {
-        kubernetes {
-          label 'k8s'
+    node('k8s') {  // ✅ Scripted syntax
+        stage('Build') {
+            echo "Building service: ${config.service ?: 'unknown'}"
         }
-        stages {
-            stage('Build') {
-                steps {
-                    echo "Building service: ${config.service ?: 'unknown'}"
-                }
-            }
-            stage('Test') {
-                steps {
-                    echo "Running tests"
-                }
-            }
-            stage('Deploy') {
-                when {
-                    expression { return config.deploy ?: false }
-                }
-                steps {
-                    echo "Deploying to ${config.env ?: 'dev'}"
-                }
+        stage('Test') {
+            echo "Running tests"
+        }
+        stage('Deploy') {
+            if (config.deploy) {
+                echo "Deploying to ${config.env ?: 'dev'}"
             }
         }
     }
